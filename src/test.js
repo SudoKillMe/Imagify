@@ -33,15 +33,24 @@ class Imagify {
         return str;
     }
     decode() {
+        this.decodeHeader();
+        this.decodeChunk();
+    }
+    decodeHeader() {
+        let header = i.readBytes(8);
+    }
+    decodeChunk() {
+        //tip: 获取某个chunk的length
+        let IHDR_LENGTH = i.readBytes(4).readInt32BE();
+        let type = i.readBytes(4);
+        let data = i.readBytes(IHDR_LENGTH);
+        let csc = i.readBytes(4);
     }
     log() {
         console.log(this.buffer);
     }
 }
 let i = new Imagify('./image/audio_play.png');
-let header = i.readBytes(8);
-//tip: 获取某个chunk的length
-let IHDR_LENGTH = i.readBytes(4).readInt32BE();
 console.log(i.readBytes(4));
 // let header;
 // let IHDR;

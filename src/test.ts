@@ -24,7 +24,7 @@ class Imagify {
         this.buffer = fs.readFileSync( file );
     }
 
-    readBytes ( length: number ):Array<number> {
+    readBytes ( length: number ): Array<number> {
 
         let bytes = slice.call(this.buffer, this.index, this.index + length);
         this.index += length;
@@ -32,7 +32,7 @@ class Imagify {
 
     }
 
-    bufferToString ( buffer: Array<number> ) {
+    bufferToString ( buffer: Array<number> ): string {
 
         let str = '';
         for ( let i=0; i<buffer.length; i++ ) {
@@ -43,7 +43,20 @@ class Imagify {
     }
 
     decode() {
-        
+        this.decodeHeader();
+        this.decodeChunk();
+    }
+
+    decodeHeader() {
+        let header = i.readBytes(8);
+    }
+
+    decodeChunk() {
+        //tip: 获取某个chunk的length
+        let IHDR_LENGTH = i.readBytes(4).readInt32BE();
+        let type = i.readBytes(4);
+        let data = i.readBytes(IHDR_LENGTH);
+        let csc = i.readBytes(4);
     }
 
     log () {
@@ -53,10 +66,8 @@ class Imagify {
 }
 
 let i = new Imagify('./image/audio_play.png');
-let header = i.readBytes(8);
 
-//tip: 获取某个chunk的length
-let IHDR_LENGTH = i.readBytes(4).readInt32BE();
+
 
 
 
