@@ -28,3 +28,14 @@ function readString(buffer) {
     return str;
 }
 exports.readString = readString;
+(function () {
+    if (!Function.prototype.curry) {
+        Function.prototype.curry = function () {
+            var fn = this;
+            var args = slice.call(arguments);
+            return function () {
+                fn.apply(this, args.concat(slice.call(arguments)));
+            };
+        };
+    }
+})();

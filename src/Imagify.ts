@@ -111,26 +111,39 @@ class Imagify {
 
             cur_chunk = Buffer.concat([length_buffer, type_buffer, data_buffer, csc_buffer]);
             console.log('type:', type);
-            switch ( type ) {
-                case 'IHDR':
-                    //console.log(data);
-                    this.result = Buffer.concat([this.result, cur_chunk]);
-                    this.decodeIHDR(data_buffer);
-                    break;
-                case 'IDAT':
-                    this.result = Buffer.concat([this.result, cur_chunk]);
-                    this.decodeIDAT(data_buffer);
-                    break;
-                case 'IEND':
-                    this.result = Buffer.concat([this.result, cur_chunk]);
-                    break;
-            }
+
+            this.handle[type](data_buffer);
+
+            // switch ( type ) {
+            //     case 'IHDR':
+            //         //console.log(data);
+            //         this.result = Buffer.concat([this.result, cur_chunk]);
+            //         this.decodeIHDR(data_buffer);
+            //         break;
+            //     case 'IDAT':
+            //         this.result = Buffer.concat([this.result, cur_chunk]);
+            //         this.decodeIDAT(data_buffer);
+            //         break;
+            //     case 'IEND':
+            //         this.result = Buffer.concat([this.result, cur_chunk]);
+            //         break;
+            // }
         } while ( this.buffer.length != this.index );
     }
 
+    handle = {
+        'IHDR'(data: Buffer) {
+            let read = U.readBytes.curry(data);
+            console.log(read(0,4));
+        },
+        'IDAT'(data: Buffer) {},
+        'IEND'(data: Buffer) {}
+    }
 
     decodeIHDR(data: Buffer): void {
         let info = this.info;  
+        let read = U.readBytes.curry(data);
+        console.log(read);
         // console.log(U.readUInt32(U.readBytes(data, 0, 4))); return;
         info.width = U.readUInt32(U.readBytes(data, 0, 4));
         info.height = U.readUInt32(U.readBytes(data, 4, 8));
